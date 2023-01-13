@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"next.xinsong.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="日期类的实现在前面学过默认成员函数后，我们就可以写一个简单的日期类了。 如何写呢？我们可以先分析分析。 日期类的成员变量都是int类型，那么构造函数是要显式定义的，成员变量都是int类型，因此浅拷贝即可。 因此拷贝构造、析构、赋值操作符重载都不需要我们显式定义，使用编译器生成的就好。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++实现日期类">
+<meta property="og:url" content="http://next.xinsong.xyz/2023/01/12/C++/11.C++%E6%97%A5%E6%9C%9F%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Nico&#39;s Blog">
+<meta property="og:description" content="日期类的实现在前面学过默认成员函数后，我们就可以写一个简单的日期类了。 如何写呢？我们可以先分析分析。 日期类的成员变量都是int类型，那么构造函数是要显式定义的，成员变量都是int类型，因此浅拷贝即可。 因此拷贝构造、析构、赋值操作符重载都不需要我们显式定义，使用编译器生成的就好。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-12T14:07:47.000Z">
+<meta property="article:modified_time" content="2023-01-13T03:37:10.438Z">
+<meta property="article:author" content="NcPhoton">
+<meta property="article:tag" content="cpp">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://next.xinsong.xyz/2023/01/12/C++/11.C++%E6%97%A5%E6%9C%9F%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://next.xinsong.xyz/2023/01/12/C++/11.C++%E6%97%A5%E6%9C%9F%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0/","path":"2023/01/12/C++/11.C++日期类的实现/","title":"C++实现日期类"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C++实现日期类 | Nico's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+<script defer src="/live2d-widget/autoload.js"></script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Nico's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">做了一点微小的工作</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">日期类的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">一些问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE-%E4%B8%8E%E5%90%8E%E7%BD%AE-%E7%9A%84%E9%87%8D%E8%BD%BD"><span class="nav-number">2.1.</span> <span class="nav-text">前置++与后置++的重载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E5%8F%98%E9%87%8F%E4%B8%8Econst%E7%9A%84%E5%86%B2%E7%AA%81"><span class="nav-number">2.2.</span> <span class="nav-text">临时变量与const的冲突</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E6%8F%90%E5%8F%96-amp-%E6%B5%81%E6%8F%92%E5%85%A5"><span class="nav-number">2.3.</span> <span class="nav-text">流提取&amp;流插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%92%8C%E5%AE%9A%E4%B9%89%E5%88%86%E7%A6%BB"><span class="nav-number">2.4.</span> <span class="nav-text">声明和定义分离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%94%A8"><span class="nav-number">2.5.</span> <span class="nav-text">关于代码复用</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="NcPhoton"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">NcPhoton</p>
+  <div class="site-description" itemprop="description">今日事今日毕</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sxfinn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sxfinn" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxnicoa@gmail.com" title="E-Mail → mailto:sxnicoa@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://next.xinsong.xyz/2023/01/12/C++/11.C++%E6%97%A5%E6%9C%9F%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="NcPhoton">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico's Blog">
+      <meta itemprop="description" content="今日事今日毕">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C++实现日期类 | Nico's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++实现日期类
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-12 22:07:47" itemprop="dateCreated datePublished" datetime="2023-01-12T22:07:47+08:00">2023-01-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-13 11:37:10" itemprop="dateModified" datetime="2023-01-13T11:37:10+08:00">2023-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Cpp/" itemprop="url" rel="index"><span itemprop="name">Cpp</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="日期类的实现"><a href="#日期类的实现" class="headerlink" title="日期类的实现"></a>日期类的实现</h2><p>在前面学过默认成员函数后，我们就可以写一个简单的日期类了。</p>
+<p>如何写呢？我们可以先分析分析。</p>
+<p>日期类的成员变量都是int类型，那么构造函数是要显式定义的，成员变量都是int类型，因此浅拷贝即可。</p>
+<p>因此拷贝构造、析构、赋值操作符重载都不需要我们显式定义，使用编译器生成的就好。</p>
+<span id="more"></span>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> MonthDay[<span class="number">13</span>] = &#123; <span class="number">0</span>, <span class="number">31</span>,<span class="number">28</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span>,<span class="number">30</span>,<span class="number">31</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">IsLeapYear</span><span class="params">(<span class="type">int</span> year)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (year % <span class="number">4</span> == <span class="number">0</span> &amp;&amp; year % <span class="number">100</span> != <span class="number">0</span> || year % <span class="number">400</span> == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Date</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">GetDay</span><span class="params">(<span class="type">int</span> year, <span class="type">int</span> month)</span><span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">IsLeapYear</span>(year) &amp;&amp; month == <span class="number">2</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">29</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> MonthDay[month];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Date</span>(<span class="type">int</span> year = <span class="number">1</span>, <span class="type">int</span> month = <span class="number">1</span>, <span class="type">int</span> day = <span class="number">1</span>)</span><br><span class="line">        :_year(year), _month(month), _day(day)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (year &lt;= <span class="number">0</span> || (month &lt; <span class="number">0</span> || month &gt;= <span class="number">13</span>) || day &gt; <span class="built_in">GetDay</span>(year, month))</span><br><span class="line">        &#123;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;日期错误&quot;</span> &lt;&lt; endl;</span><br><span class="line">            cout &lt;&lt; year &lt;&lt; <span class="string">&quot;-&quot;</span> &lt;&lt; month &lt;&lt; <span class="string">&quot;-&quot;</span> &lt;&lt; day &lt;&lt; endl;</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">swap</span><span class="params">(Date&amp; d)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ::<span class="built_in">swap</span>(_year, d._year);</span><br><span class="line">        ::<span class="built_in">swap</span>(_month, d._month);</span><br><span class="line">        ::<span class="built_in">swap</span>(_day, d._day);</span><br><span class="line">    &#125;</span><br><span class="line">    Date&amp; <span class="keyword">operator</span>+=(<span class="type">int</span> day)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (day &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> *<span class="keyword">this</span> -= -day;</span><br><span class="line">        &#125;</span><br><span class="line">        _day += day;</span><br><span class="line">        <span class="keyword">while</span> (_day &gt; <span class="built_in">GetDay</span>(_year, _month))</span><br><span class="line">        &#123;</span><br><span class="line">            _day -= <span class="built_in">GetDay</span>(_year, _month);</span><br><span class="line">            _month++;</span><br><span class="line">            <span class="keyword">if</span> (_month &gt; <span class="number">12</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                _month = <span class="number">1</span>;</span><br><span class="line">                _year++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Date <span class="keyword">operator</span>+(<span class="type">int</span> day)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Date</span>(*<span class="keyword">this</span>) += day;</span><br><span class="line">    &#125;</span><br><span class="line">    Date&amp; <span class="keyword">operator</span>-=(<span class="type">int</span> day)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (day &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> *<span class="keyword">this</span> += -day;</span><br><span class="line">        &#125;</span><br><span class="line">        _day -= day;</span><br><span class="line">        <span class="keyword">while</span> (_day &lt; <span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            _month--;</span><br><span class="line">            <span class="keyword">if</span> (_month &lt; <span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                _year--;</span><br><span class="line">                _month = <span class="number">12</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            _day += <span class="built_in">GetDay</span>(_year, _month);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Date <span class="keyword">operator</span>-(<span class="type">int</span> day)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Date</span>(*<span class="keyword">this</span>) -= day;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&gt;(<span class="type">const</span> Date&amp; d)<span class="type">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (_year &gt; d._year || _year == d._year &amp;&amp; _month &gt; d._month ||</span><br><span class="line">            _year == d._year &amp;&amp; _month == d._month &amp;&amp; _day &gt; d._day)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&gt;=(<span class="type">const</span> Date&amp; d)<span class="type">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span> &gt; d || *<span class="keyword">this</span> == d;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>==(<span class="type">const</span> Date&amp; d)<span class="type">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> _year == d._year &amp;&amp; _month == d._month &amp;&amp; _day == d._day;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>!=(<span class="type">const</span> Date&amp; d)<span class="type">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> !(*<span class="keyword">this</span> == d);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&lt;(<span class="type">const</span> Date&amp; d)<span class="type">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> !(*<span class="keyword">this</span> &gt;= d);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&lt;=(<span class="type">const</span> Date&amp; d)<span class="type">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span> &lt; d || *<span class="keyword">this</span> == d;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Date&amp; <span class="keyword">operator</span>++()</span><br><span class="line">    &#123;</span><br><span class="line">        *<span class="keyword">this</span> += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Date <span class="keyword">operator</span>++(<span class="type">int</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">Date <span class="title">ret</span><span class="params">(*<span class="keyword">this</span>)</span></span>;</span><br><span class="line">        *<span class="keyword">this</span> += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Date&amp; <span class="keyword">operator</span>--()</span><br><span class="line">    &#123;</span><br><span class="line">        *<span class="keyword">this</span> -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Date <span class="keyword">operator</span>--(<span class="type">int</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">Date <span class="title">ret</span><span class="params">(*<span class="keyword">this</span>)</span></span>;</span><br><span class="line">        *<span class="keyword">this</span> -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> <span class="keyword">operator</span>-(<span class="type">const</span> Date&amp; d)<span class="type">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">Date <span class="title">d1</span><span class="params">(*<span class="keyword">this</span>)</span></span>;</span><br><span class="line">        <span class="function">Date <span class="title">d2</span><span class="params">(d)</span></span>;</span><br><span class="line">        <span class="type">int</span> flag = <span class="number">-1</span>;</span><br><span class="line">        <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> num1 = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> num2 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (d1 &gt; d2)</span><br><span class="line">        &#123;</span><br><span class="line">            d1.<span class="built_in">swap</span>(d2);</span><br><span class="line">            flag = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; d1._month; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            num1 += <span class="built_in">GetDay</span>(d1._year, i);</span><br><span class="line">        &#125;</span><br><span class="line">        num1 += d1._day;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; d2._month; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            num2 += <span class="built_in">GetDay</span>(d2._year, i);</span><br><span class="line">        &#125;</span><br><span class="line">        num2 += d2._day;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = d1._year; i &lt; d2._year; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            ret += <span class="number">365</span>;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">IsLeapYear</span>(i))</span><br><span class="line">                ret++;</span><br><span class="line">        &#125;</span><br><span class="line">        ret = ret + num2 - num1;</span><br><span class="line">        <span class="keyword">return</span> ret * flag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ostream&amp; <span class="keyword">operator</span>&lt;&lt;(ostream&amp; out,<span class="type">const</span> Date&amp; d)<span class="comment">//定义在外部的</span></span><br><span class="line">    &#123;</span><br><span class="line">        out &lt;&lt; d._year &lt;&lt; <span class="string">&quot;-&quot;</span> &lt;&lt; d._month &lt;&lt; <span class="string">&quot;-&quot;</span> &lt;&lt; d._day &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span> out;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    istream&amp; <span class="keyword">operator</span>&gt;&gt;(istream&amp; in, <span class="type">const</span> Date&amp; d)<span class="comment">//定义在外部的</span></span><br><span class="line">    &#123;</span><br><span class="line">        in &gt;&gt; d._year &gt;&gt; d._month &gt;&gt; d._day;</span><br><span class="line">        <span class="keyword">return</span> in;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> _year;</span><br><span class="line">    <span class="type">int</span> _month;</span><br><span class="line">    <span class="type">int</span> _day;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>代码不难，但可能会遇到一些细节处理上的问题。</p>
+<h2 id="一些问题"><a href="#一些问题" class="headerlink" title="一些问题"></a>一些问题</h2><h3 id="前置-与后置-的重载"><a href="#前置-与后置-的重载" class="headerlink" title="前置++与后置++的重载"></a>前置++与后置++的重载</h3><p>C++中如何区分两者呢，两者的函数名（操作符）作用对象（形参）都是一样的；</p>
+<p>因此C++规定了让后置++多一个int参数，用于与前置++构成重载得以区分。</p>
+<p><code>Date&amp; operator++();</code>前置++</p>
+<p><code>Date operator++(int);</code>后置++</p>
+<p>所以调用后置++操作符重载时，会多传一个int值，用于区分前置++，这个参数不需要我们显式去传，编译器帮我们处理。</p>
+<p>但注意后置++的操作符重载不能写成<code>Date operator++(int a = 0);</code>，这是不被编译器所允许的。</p>
+<p>因为这样会导致调用不明确，我们调用前置++重载时是该调用无参的还是缺省呢？这里就会产生歧义，因此不能给后置++重载的int参数缺省值。</p>
+<h3 id="临时变量与const的冲突"><a href="#临时变量与const的冲突" class="headerlink" title="临时变量与const的冲突"></a>临时变量与const的冲突</h3><p><code>cout &lt;&lt; d1++ &lt;&lt; endl;</code>这段代码实际上就会出错了，会报错：</p>
+<blockquote>
+<p>二元“&lt;&lt;”: 没有找到接受“Date”类型的右操作数的运算符(或没有可接受的转换)</p>
+</blockquote>
+<p>说明上述代码没有找到对应的函数，可是明明参数什么的都是一致的啊？</p>
+<p>d1++调用的是d1.operator++(int)函数，而此函数返回值是一个<strong>传值返回</strong>，而传递的过程实际上是在调用函数栈帧中创建了一个临时变量来接收被调函数的返回值，因此d1++是一个临时变量，具有常性，但我们的<code>ostream&amp; operator&lt;&lt;(ostream&amp; out,Date&amp; d)</code>函数的参数类型没有被const修饰，而C++对const的对象和非const对象区分得很严格，它们会被当做不同的类型，因此报错。</p>
+<p><code>cout &lt;&lt; ++d1 &lt;&lt; endl;</code>会不会报错呢？这里返回的是d1的引用，而不是一个临时变量的拷贝，对++d1的访问实际上就是对d1的访问，因此不会报错。</p>
+<h3 id="流提取-amp-流插入"><a href="#流提取-amp-流插入" class="headerlink" title="流提取&amp;流插入"></a>流提取&amp;流插入</h3><p>我们没有将这两个函数写成成员函数，而是设置为友元函数。</p>
+<p>其实可以是可以，如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ostream&amp; <span class="keyword">operator</span>&lt;&lt;(ostream&amp; out)<span class="type">const</span></span><br><span class="line">&#123;</span><br><span class="line">    out &lt;&lt; _year &lt;&lt; <span class="string">&quot;-&quot;</span> &lt;&lt; _month &lt;&lt; <span class="string">&quot;-&quot;</span> &lt;&lt; _day &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> out;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">istream&amp; <span class="keyword">operator</span>&gt;&gt;(istream&amp; in)</span><br><span class="line">&#123;</span><br><span class="line">    in &gt;&gt; _year &gt;&gt; _month &gt;&gt; _day;</span><br><span class="line">    <span class="keyword">return</span> in;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>设置为成员函数，那么第一个参数就是隐含的this指针，第二个参数是输入输出流的对象。</p>
+<p>调用方式：<code>d1 &lt;&lt; cout;</code></p>
+<p>调用时对象就只能作为左操作数，cout或者cin只能作为右操作数，与我们的使用习惯不符合，因此这里采用友元的方式处理流插入和流提取。</p>
+<h3 id="声明和定义分离"><a href="#声明和定义分离" class="headerlink" title="声明和定义分离"></a>声明和定义分离</h3><p>首先我们要知道全局函数我们是不能放在头文件中的，因为头文件中得函数定义会在各个源文件展开并编译，<strong>同一个函数在两个不同的源文件有了不同的地址产生冲突</strong>，造成重定义。</p>
+<p>如果想要成员函数的声明和定义分离，那成员函数的定义也一定得放在.cpp文件中而不是头文件，原因同上，同一个函数在多个源文件内被编译，造成重定义。</p>
+<p>那为什么函数定义在类中，能正常编译呢？</p>
+<p>在类中定义得函数是<strong>默认内联</strong>的，不会放入符号表，即使头文件在多个源文件展开，也不会有重定义错误，因为它们都单独作用于所存在的源文件（没有外部链接属性）。</p>
+<p>那可能又会问，放在类的函数不一定会被编译器当做内联，那这些没有被当做内联的函数会有函数地址，为什么也不会有重定义错误？</p>
+<p>答案是即使没有被编译器当做内联，即不会在调用的地方被展开，但是其是<strong>具有内联属性</strong>的，而无法被外部链接，就不会发生多个源文件相同函数有冲突的情况。</p>
+<p>例如下面这种：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//func.h</span></span><br><span class="line"><span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">print</span><span class="params">(<span class="type">const</span> <span class="type">int</span> a)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//func.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&quot;date.h&quot;</span></span></span><br><span class="line"><span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">Test</span><span class="params">(<span class="type">const</span> <span class="type">int</span> a)</span><span class="comment">//编译器不会采用我们的建议使其内联</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; a &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//main.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&quot;date.h&quot;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    Test(a);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>链接错误：LNK2019: 无法解析的外部符号 “void __cdecl print(int)” (?print@@YAXH@Z)，函数 main 中引用了该符号</p>
+</blockquote>
+<p>则表明在main.cpp中找不到func.cpp中的func函数，可以这样理解——func函数虽然有地址，但是由于我们的inline声明，它无论如何都有<strong>内联属性</strong>，无法被外部链接。</p>
+<p>结论：</p>
+<ul>
+<li>公有的函数（包括友元）都<strong>不能定义在头文件</strong>，否则会有函数重定义的错误；</li>
+<li>类的成员函数如果不是内联函数，也不能定义在头文件，否则会有函数重定义的错误；</li>
+<li>若函数声明了是内联的，编译器也采纳了，那么内联函数没有地址，无法被外部链接；</li>
+<li>若函数声明了是内联的，但编译器没有采纳，虽然产生了函数地址，但有内联属性，也无法被外部链接；</li>
+</ul>
+<p><strong>浓缩成一句话，被声明为内联的函数，即使编译器没有采纳内联意见，但仍保留内联属性（没有外部连接属性），必须没有外部链接属性的函数才能定义在头文件中</strong>。</p>
+<p>说到外部链接属性，那么static修饰全局函数也是改变其连接属性，让函数只能在本源文件内被调用（无法被外部链接）即使其他源文件有一个完全相同的函数定义，但我链接此函数时只会在本源文件找，就不会有函数地址的冲突，因此static修饰全局函数时，这个函数也可以定义在头文件中而不发生重定义的错误。</p>
+<p>当然也可以说它们没有了外部链接属性，就不会被放入符号表，也不会有符号表的合并中同一个函数却有多个地址的冲突，因此多个源文件链接到一起时不会报错。（我猜这个是主要原因）</p>
+<h3 id="关于代码复用"><a href="#关于代码复用" class="headerlink" title="关于代码复用"></a>关于代码复用</h3><p>我最开始觉得代码复用很不好，因为一个函数的函数体内要调用另一个函数来实现部分功能，这就需要有压栈的开销，这不是浪费资源吗？因此我带着怀疑在日期类的+运算符重载的重载中复用了+&#x3D;运算符的重载。</p>
+<p>但是当我做修改和添加功能时，我才发现代码复用的好处：</p>
+<p>这降低了我们维护代码的难度，相似但细节上有差异的函数我们不需要一个地方出问题了就去全盘修改，而是只需要修改被复用了的函数，最重要的是我们省事啊！</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>NcPhoton
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://next.xinsong.xyz/2023/01/12/C++/11.C++%E6%97%A5%E6%9C%9F%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0/" title="C++实现日期类">http://next.xinsong.xyz/2023/01/12/C++/11.C++日期类的实现/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/cpp/" rel="tag"># cpp</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/01/12/C++/10.C++%E7%B1%BB%E5%92%8C%E5%AF%B9%E8%B1%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" rel="prev" title="C++类和对象下">
+                  <i class="fa fa-chevron-left"></i> C++类和对象下
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/12/C++/12.C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="next" title="C++内存管理">
+                  C++内存管理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NcPhoton</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

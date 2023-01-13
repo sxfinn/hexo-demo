@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"next.xinsong.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="指针是什么 指针是什么？ 指针理解的2个要点：  指针是内存中一个最小单元的编号，也就是地址； 平时口语中说的指针，通常指的是指针变量，是用来存放内存地址的变量；   指针就是地址，指向某一块内存空间。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言指针">
+<meta property="og:url" content="http://next.xinsong.xyz/2023/01/12/C/9.%E3%80%90C%E8%AF%AD%E8%A8%80%E8%AF%A6%E8%A7%A3%E3%80%91%E6%8C%87%E9%92%88/index.html">
+<meta property="og:site_name" content="Nico&#39;s Blog">
+<meta property="og:description" content="指针是什么 指针是什么？ 指针理解的2个要点：  指针是内存中一个最小单元的编号，也就是地址； 平时口语中说的指针，通常指的是指针变量，是用来存放内存地址的变量；   指针就是地址，指向某一块内存空间。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021604618.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021604389.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021604037.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605169.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605783.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605355.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605352.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605702.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605778.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605992.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605633.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605083.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021606311.png">
+<meta property="article:published_time" content="2023-01-12T13:28:56.000Z">
+<meta property="article:modified_time" content="2023-01-13T03:35:23.079Z">
+<meta property="article:author" content="NcPhoton">
+<meta property="article:tag" content="c">
+<meta property="article:tag" content="指针">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021604618.png">
+
+
+<link rel="canonical" href="http://next.xinsong.xyz/2023/01/12/C/9.%E3%80%90C%E8%AF%AD%E8%A8%80%E8%AF%A6%E8%A7%A3%E3%80%91%E6%8C%87%E9%92%88/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://next.xinsong.xyz/2023/01/12/C/9.%E3%80%90C%E8%AF%AD%E8%A8%80%E8%AF%A6%E8%A7%A3%E3%80%91%E6%8C%87%E9%92%88/","path":"2023/01/12/C/9.【C语言详解】指针/","title":"C语言指针"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C语言指针 | Nico's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+<script defer src="/live2d-widget/autoload.js"></script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Nico's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">做了一点微小的工作</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">指针是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E5%92%8C%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">指针和指针类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8E%E6%8C%87%E9%92%88"><span class="nav-number">3.</span> <span class="nav-text">野指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E8%BF%90%E7%AE%97"><span class="nav-number">4.</span> <span class="nav-text">指针运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E5%92%8C%E6%95%B0%E7%BB%84"><span class="nav-number">5.</span> <span class="nav-text">指针和数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E7%BA%A7%E6%8C%87%E9%92%88"><span class="nav-number">6.</span> <span class="nav-text">二级指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84"><span class="nav-number">7.</span> <span class="nav-text">指针数组</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="NcPhoton"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">NcPhoton</p>
+  <div class="site-description" itemprop="description">今日事今日毕</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sxfinn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sxfinn" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxnicoa@gmail.com" title="E-Mail → mailto:sxnicoa@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://next.xinsong.xyz/2023/01/12/C/9.%E3%80%90C%E8%AF%AD%E8%A8%80%E8%AF%A6%E8%A7%A3%E3%80%91%E6%8C%87%E9%92%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="NcPhoton">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico's Blog">
+      <meta itemprop="description" content="今日事今日毕">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C语言指针 | Nico's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C语言指针
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-12 21:28:56" itemprop="dateCreated datePublished" datetime="2023-01-12T21:28:56+08:00">2023-01-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-13 11:35:23" itemprop="dateModified" datetime="2023-01-13T11:35:23+08:00">2023-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">C语言</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="指针是什么"><a href="#指针是什么" class="headerlink" title="指针是什么"></a>指针是什么</h3><blockquote>
+<p>指针是什么？</p>
+<p>指针理解的2个要点：</p>
+<ol>
+<li>指针是内存中一个最小单元的编号，也就是地址；</li>
+<li>平时口语中说的指针，通常指的是指针变量，是用来存放内存地址的变量；</li>
+</ol>
+</blockquote>
+<p>指针就是地址，指向某一块内存空间。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021604618.png" alt="image-20220518225213164"></p>
+<img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021604389.png" alt="image-20220518225220643" style="zoom:33%;" />
+
+<span id="more"></span>
+
+<p>我们有一个变量在栈中被创建，如果我们想找到它有几种方式呢？</p>
+<ol>
+<li>通过变量名去访问</li>
+<li>通过地址访问</li>
+</ol>
+<p>这一个个编号就是虚拟内存地址，相当于将内存分为以一个字节为基本单位的很多单元体，通过对这些单元体的编号，我们就可以在任何位置找到一个对应的编号。</p>
+<p>像不像我们现实中的地址门牌号？</p>
+<p><strong>指针变量</strong></p>
+<blockquote>
+<p>我们可以通过&amp;（取地址操作符）取出变量的内存其实地址，把地址可以存放到一个变量中，这个变量就是指针变量。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">10</span>;<span class="comment">//在内存栈中开辟一块空间</span></span><br><span class="line">    <span class="type">int</span> *p = &amp;a;<span class="comment">//这里我们对变量a，取出它的地址，可以使用&amp;操作符。</span></span><br><span class="line">      <span class="comment">//a变量占用4个字节的空间，这里是将a的4个字节的第一个字节的地址存放在p变量</span></span><br><span class="line">    <span class="comment">//中，p就是一个之指针变量。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>指针变量，用来存放地址的变量。（存放在指针中的值都被当成地址处理）。</p>
+<p>那这里的问题是：</p>
+<ul>
+<li>一个小的单元到底是多大？（1个字节)</li>
+<li>如何编址？</li>
+</ul>
+<p>经过仔细的计算和权衡我们发现一个字节给一个对应的地址是比较合适的。</p>
+<p>对于32位的机器，假设有32根地址线，那么假设每根地址线在寻址的时候产生高电平（高电压）和低电平（低电压）就是（1或者0）；</p>
+<p>这样每个地址就可以用32个二进制位表示。每个二进制位有两种情况。</p>
+<p>那么32根地址线产生的地址就会是：2^32^</p>
+<p>每个地址标识一个字节，那我们就可以给 （2^32Byte &#x3D; 2^32&#x2F;1024KB &#x3D; 2^32^ &#x2F; 1024&#x2F;1024MB &#x3D; 2^32&#x2F;1024&#x2F;1024&#x2F;1024GB &#x3D; 4GB） 4G的空闲进行编址。</p>
+<p><strong>这里我们就明白：</strong></p>
+<ul>
+<li><p>在32位的机器上，地址是32个0或者1组成二进制序列，那地址就得用4个字节的空间来存储，所以</p>
+</li>
+<li><p>一个指针变量的大小就应该是4个字节。</p>
+</li>
+<li><p>那如果在64位机器上，如果有64个地址线，那一个指针变量的大小是8个字节，才能存放一个地址。</p>
+<p><strong>总结：</strong></p>
+</li>
+<li><p>指针是用来存放地址的，地址是唯一标示一块地址空间的。</p>
+</li>
+<li><p>指针的大小在32位平台是4个字节，在64位平台是8个字节。</p>
+</li>
+</ul>
+<h3 id="指针和指针类型"><a href="#指针和指针类型" class="headerlink" title="指针和指针类型"></a>指针和指针类型</h3><p>先看看基本类型：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">整形</span><br><span class="line"><span class="type">int</span></span><br><span class="line"><span class="type">char</span></span><br><span class="line"><span class="type">short</span></span><br><span class="line"><span class="type">long</span></span><br><span class="line">longlong</span><br><span class="line"></span><br><span class="line">浮点型</span><br><span class="line"><span class="type">double</span></span><br><span class="line"><span class="type">float</span></span><br></pre></td></tr></table></figure>
+
+<p>那么指针指向不同的类型，是不是就代表着指针类型的不同呢？</p>
+<p>可以确定的说：当然。</p>
+<p>如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span>* p = &amp;a;</span><br></pre></td></tr></table></figure>
+
+<p>p就是一个指针变量，指向一个int类型的数据。</p>
+<p>根据a的类型的不同，p的类型也要做出相应的调正。</p>
+<blockquote>
+<p>我们知道p就是一个指针变量，那它的类型是怎样的呢？</p>
+<p>我们给指针变量相应的类型。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span>  *pc = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">int</span>  *pi = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">short</span> *ps = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">long</span>  *pl = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">float</span> *pf = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">double</span> *pd = <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到任何任何类型的指针的变量前都有一个 * ， 大致模样是</p>
+<p>type + * + 变量名</p>
+<p><code>char*</code> 类型的指针是为了存放 <code>char</code> 类型变量的地址。</p>
+<p><code>short*</code> 类型的指针是为了存放 <code>short</code> 类型变量的地址。</p>
+<p><code>int*</code> 类型的指针是为了存放 <code>int</code> 类型变量的地址。</p>
+<p><strong>指针可以根据指向不同的类型来分类，那么它们作用上有什么不同？</strong></p>
+<p>通常来说，想通过地址访问变量，不同变量的存储方式，大小都不同，那么指针去访问的时候的权限以及解引用访问方式是不是应该也不同。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> i;</span><br><span class="line"><span class="type">double</span> d;</span><br><span class="line"><span class="comment">//假如它们的首地址相同</span></span><br><span class="line"><span class="type">int</span>* p1 = &amp;i;</span><br><span class="line"><span class="type">double</span> *p2 = &amp;d;</span><br><span class="line">p1 == p2;</span><br></pre></td></tr></table></figure>
+
+<p>int 和 double的类型长度不同，那么通过解引用方式取得 i 和 d的值的时候，所访问的字节长度也不同。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//演示实例</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> n = <span class="number">10</span>;</span><br><span class="line">    <span class="type">char</span> *pc = (<span class="type">char</span>*)&amp;n;</span><br><span class="line">    <span class="type">int</span> *pi = &amp;n;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, &amp;n);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, pc);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, pc+<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, pi);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, pi+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021604037.png" alt="image-20220518225230690"></p>
+<p>可以看到指针类型决定了指针加一或者减一时跳过几个字节。</p>
+<p><strong>指针的解引用</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> n = <span class="number">0x11223344</span>;</span><br><span class="line">    <span class="type">char</span>* pc = (<span class="type">char</span>*)&amp;n;</span><br><span class="line">    <span class="type">int</span>* pi = &amp;n;</span><br><span class="line">    *pc = <span class="number">0</span>; (<span class="number">1</span>)</span><br><span class="line">    *pi = <span class="number">0</span>; (<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605169.png" alt="image-20220518225240905"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605783.png" alt="image-20220518225249369"></p>
+<p>上图为(1)被执行</p>
+<p>下图为(2)被执行</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605355.png" alt="image-20220518225257294"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605352.png" alt="image-20220518225304232"></p>
+<p>指针的类型决定了，对指针解引用的时候有多大的权限（能操作几个字节）。<br>比如： char* 的指针解引用就只能访问一个字节，而 int* 的指针的解引用就能访问四个字节。</p>
+<h3 id="野指针"><a href="#野指针" class="headerlink" title="野指针"></a>野指针</h3><p><strong>成因</strong></p>
+<ol>
+<li>指针未初始化</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span>* p;</span><br><span class="line">    <span class="type">int</span> a = *p;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>会报错：使用了未初始化的局部变量。</p>
+<ol start="2">
+<li>指针越界访问</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> arr[<span class="number">10</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">    <span class="type">int</span>* p = arr;</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= <span class="number">11</span>; i++)</span><br><span class="line">    &#123;		</span><br><span class="line">        *(p++) = i;<span class="comment">//当指针指向的范围超出数组arr的范围时，p就是野指针</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>如何规避野指针的使用</strong></p>
+<ol>
+<li>指针初始化；</li>
+<li>注意指针的越界；</li>
+<li>指针使用后及时置NULL；</li>
+<li>函数体中不应返回局部变量的地址；</li>
+<li>检查指针的有效性；</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> *p = <span class="literal">NULL</span>;</span><br><span class="line">  <span class="comment">//....</span></span><br><span class="line">  <span class="type">int</span> a = <span class="number">10</span>;</span><br><span class="line">  p = &amp;a;</span><br><span class="line">  <span class="keyword">if</span>(p != <span class="literal">NULL</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    *p = <span class="number">20</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="指针运算"><a href="#指针运算" class="headerlink" title="指针运算"></a>指针运算</h3><ul>
+<li>指针 + 整数</li>
+<li>指针 - 整数</li>
+<li>指针 - 指针</li>
+</ul>
+<p><strong>指针 +- 整数</strong></p>
+<p>指针的值增加（减少） &#x3D; 指向的类型的字节数 * 整数。</p>
+<p><strong>指针 - 指针</strong></p>
+<p>结果等于：两个指针相差的字节数 &#x2F; 指向类型的字节数。</p>
+<p><strong>指针的关系运算</strong></p>
+<p>就是普通的地址值的比较。</p>
+<p>值得注意的是，在对数组的操作中:</p>
+<p><strong>标准规定：</strong></p>
+<blockquote>
+<p>允许指向数组元素的指针与指向数组最后一个元素后面的那个内存位置的指针比较，但是不允许与指向第一个元素之前的那个内存位置的指针进行比较。</p>
+</blockquote>
+<h3 id="指针和数组"><a href="#指针和数组" class="headerlink" title="指针和数组"></a>指针和数组</h3><p>看代码:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> arr[<span class="number">10</span>] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">0</span>&#125;;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, arr);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, &amp;arr[<span class="number">0</span>]);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605702.png" alt="image-20220518225314458"></p>
+<p>数组名和数组首元素的地址的值是一样的。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605778.png" alt="image-20220518225320933"></p>
+<p>但是注意类型是不同的，只是在数值上相等。</p>
+<p>我们既然可以知道数组元素的指针，那么自然可以实现对其元素地址的逐一访问。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> arr[] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">0</span>&#125;;</span><br><span class="line">  <span class="type">int</span> *p = arr; <span class="comment">//指针存放数组首元素的地址</span></span><br><span class="line">  <span class="type">int</span> sz = <span class="keyword">sizeof</span>(arr)/<span class="keyword">sizeof</span>(arr[<span class="number">0</span>]);</span><br><span class="line">  <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;sz; i++)</span><br><span class="line"> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;&amp;arr[%d] = %p  &lt;====&gt; p+%d = %p\n&quot;</span>, i, &amp;arr[i], i, p+i);</span><br><span class="line"> &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605992.png" alt="image-20220518225327076"></p>
+<p>可以看到&amp;arr[i] &#x3D;&#x3D; (arr + i )。</p>
+<p>既然连地址都可以逐一访问了，那么地址上所存储的数据自然可以轻松获得：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> arr[] = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">0</span> &#125;;</span><br><span class="line">    <span class="type">int</span> *p = arr; <span class="comment">//指针存放数组首元素的地址</span></span><br><span class="line">    <span class="type">int</span> sz = <span class="keyword">sizeof</span>(arr) / <span class="keyword">sizeof</span>(arr[<span class="number">0</span>]);</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i&lt;sz; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, *(p + i));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h3><p>指针是存储变量地址的变量，那么自然指针变量也是需要一块内存空间来存储它的值。</p>
+<p>如果我们想得到指针变量的地址，只能对指针变量&amp;操作。</p>
+<p>如果我们也想找一个变量用来存储指针变量的值，那么这个变量的类型是什么？</p>
+<p>这就是二级指针。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> num = <span class="number">10</span>;</span><br><span class="line">    <span class="type">int</span>* pa = &amp;num;</span><br><span class="line">    <span class="type">int</span>** ppa = &amp;pa;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么可以通过二级指针获取int变量的值吗？</p>
+<p>是的，我们既然二级指针记录了一级指针的值，就可以取得一级指针值，而一级指针的值又是int变量的地址，层层递进解引用，便可以获取int变量的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">*ppa = pa;</span><br><span class="line">**ppa = *pa = num</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="指针数组"><a href="#指针数组" class="headerlink" title="指针数组"></a>指针数组</h3><p>元素类型为整形集合的数组叫什么？</p>
+<p>答案是整形数组，那么理所应当，元素类型为指针的数组就叫指针数组了。</p>
+<p>我们创建一个整型数组或者字符数组如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> arr1[<span class="number">10</span>];</span><br><span class="line"><span class="type">char</span> arr2[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+
+<p>数组名可以看作一个变量名，[10]代表这是个数组中有十个元素，那么剩下的就是元素类型。</p>
+<p>我们创建一个有是个元素，每个元素为int*指针的数组：</p>
+<p>我们创建一个int*变量是如何创建的？</p>
+<ol>
+<li>确定变量名</li>
+<li>确定变量的类型</li>
+<li>在变量名前加上类型名</li>
+</ol>
+<p>那么数组也是差不多的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">首先写出想要的数组名</span><br><span class="line">arr;</span><br><span class="line"></span><br><span class="line">arr是个数组，并且有十个元素，我们加上[<span class="number">10</span>];</span><br><span class="line">arr[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">元素类型是什么？ <span class="type">int</span>*</span><br><span class="line"><span class="type">int</span>* arr[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>整形数组在内存中的存储</strong></p>
+<img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605633.png" alt="image-20220518225336391" style="zoom:50%;" />
+
+<img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021605083.png" alt="image-20220518225342798" style="zoom:50%;" />
+
+
+
+<p>指针数组呢？</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021606311.png" alt="image-20220518225349700"></p>
+<p>可以看到，每个元素都是一个指针，指向一块特定的内存空间。</p>
+<p><strong>思考：指针数组的元素可以是数组名吗？</strong></p>
+<p>答案是的，除了对数组名进行sizeof和&amp;操作的两种情况外，其他时候的数组名，一律当作指针来使用。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>NcPhoton
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://next.xinsong.xyz/2023/01/12/C/9.%E3%80%90C%E8%AF%AD%E8%A8%80%E8%AF%A6%E8%A7%A3%E3%80%91%E6%8C%87%E9%92%88/" title="C语言指针">http://next.xinsong.xyz/2023/01/12/C/9.【C语言详解】指针/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/c/" rel="tag"># c</a>
+              <a href="/tags/%E6%8C%87%E9%92%88/" rel="tag"># 指针</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/01/12/C/8.%E3%80%90C%E8%AF%AD%E8%A8%80%E8%AF%A6%E8%A7%A3%E3%80%91%E6%93%8D%E4%BD%9C%E7%AC%A6/" rel="prev" title="C语言操作符">
+                  <i class="fa fa-chevron-left"></i> C语言操作符
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/12/C/10.%E3%80%90C%E8%AF%AD%E8%A8%80%E8%AF%A6%E8%A7%A3%E3%80%91%E7%BB%93%E6%9E%84%E4%BD%93/" rel="next" title="C语言结构体">
+                  C语言结构体 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NcPhoton</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

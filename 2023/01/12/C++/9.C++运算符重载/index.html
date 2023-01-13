@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"next.xinsong.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="运算符重载本文包括了对C++类的6个默认成员函数中的赋值运算符重载和取地址和const对象取地址操作符的重载。 运算符是程序中最最常见的操作，例如对于内置类型的赋值我们直接使用&#x3D;赋值即可，因为这些编译器已经帮我们做好了，但是对象的赋值呢？能直接赋值吗？ 概念 C++为了增强代码的可读性引入了运算符重载，运算符重载是具有特殊函数名的函数，也具有其返回值类型，函数名字以及参数列表，其返回值类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++运算符重载">
+<meta property="og:url" content="http://next.xinsong.xyz/2023/01/12/C++/9.C++%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/index.html">
+<meta property="og:site_name" content="Nico&#39;s Blog">
+<meta property="og:description" content="运算符重载本文包括了对C++类的6个默认成员函数中的赋值运算符重载和取地址和const对象取地址操作符的重载。 运算符是程序中最最常见的操作，例如对于内置类型的赋值我们直接使用&#x3D;赋值即可，因为这些编译器已经帮我们做好了，但是对象的赋值呢？能直接赋值吗？ 概念 C++为了增强代码的可读性引入了运算符重载，运算符重载是具有特殊函数名的函数，也具有其返回值类型，函数名字以及参数列表，其返回值类">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021627864.png">
+<meta property="article:published_time" content="2023-01-12T14:07:09.000Z">
+<meta property="article:modified_time" content="2023-01-13T03:37:01.725Z">
+<meta property="article:author" content="NcPhoton">
+<meta property="article:tag" content="cpp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021627864.png">
+
+
+<link rel="canonical" href="http://next.xinsong.xyz/2023/01/12/C++/9.C++%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://next.xinsong.xyz/2023/01/12/C++/9.C++%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/","path":"2023/01/12/C++/9.C++运算符重载/","title":"C++运算符重载"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C++运算符重载 | Nico's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+<script defer src="/live2d-widget/autoload.js"></script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Nico's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">做了一点微小的工作</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD"><span class="nav-number">1.</span> <span class="nav-text">运算符重载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD"><span class="nav-number">1.2.</span> <span class="nav-text">赋值运算符重载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const%E6%88%90%E5%91%98"><span class="nav-number">1.3.</span> <span class="nav-text">const成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%96%E5%9C%B0%E5%9D%80%E5%8F%8Aconst%E5%8F%96%E5%9C%B0%E5%9D%80%E6%93%8D%E4%BD%9C%E7%AC%A6%E9%87%8D%E8%BD%BD"><span class="nav-number">1.4.</span> <span class="nav-text">取地址及const取地址操作符重载</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="NcPhoton"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">NcPhoton</p>
+  <div class="site-description" itemprop="description">今日事今日毕</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sxfinn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sxfinn" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxnicoa@gmail.com" title="E-Mail → mailto:sxnicoa@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://next.xinsong.xyz/2023/01/12/C++/9.C++%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="NcPhoton">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico's Blog">
+      <meta itemprop="description" content="今日事今日毕">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C++运算符重载 | Nico's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++运算符重载
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-12 22:07:09" itemprop="dateCreated datePublished" datetime="2023-01-12T22:07:09+08:00">2023-01-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-13 11:37:01" itemprop="dateModified" datetime="2023-01-13T11:37:01+08:00">2023-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Cpp/" itemprop="url" rel="index"><span itemprop="name">Cpp</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="运算符重载"><a href="#运算符重载" class="headerlink" title="运算符重载"></a>运算符重载</h2><p>本文包括了对C++类的6个默认成员函数中的赋值运算符重载和取地址和const对象取地址操作符的重载。</p>
+<p>运算符是程序中最最常见的操作，例如对于内置类型的赋值我们直接使用&#x3D;赋值即可，因为这些编译器已经帮我们做好了，但是对象的赋值呢？能直接赋值吗？</p>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><blockquote>
+<p><strong>C++为了增强代码的可读性引入了运算符重载，运算符重载是具有特殊函数名的函数</strong>，也具有其返回值类型，函数名字以及参数列表，其返回值类型与参数列表与普通的函数类似。</p>
+<p>函数名字为：<strong>关键字operator后面接需要重载的运算符符号。</strong></p>
+<p>函数原型：<strong>返回值类型 operator操作符(参数列表)</strong></p>
+</blockquote>
+<p>需要注意的几点：</p>
+<ul>
+<li><p>不能通过连接其他符号来创建新的操作符：比如operator@，必须是已有的操作符；</p>
+</li>
+<li><p>重载操作符必须有一个类类型或者枚举类型的操作数；</p>
+</li>
+<li><p>用于内置类型的操作符，其含义不能改变，例如：内置的整型+，不 能改变其含义；</p>
+</li>
+<li><p>作为类成员的重载函数时，其形参看起来比操作数数目少1，成员函数的操作符有一个默认的形参this，限定为第一个形参；</p>
+</li>
+<li><p>参数个数与重载的运算符有关；</p>
+</li>
+<li><p>.* 、:: 、sizeof 、?: 、. 注意以上5个运算符不能重载；</p>
+</li>
+<li><p>运算符重载作用于左操作数，会把左操作数当做第一个参数；</p>
+</li>
+</ul>
+<p>既然是对自定义类型对象之间的操作符的重载，那么它的参数一定有此类型的对象，并且需要对对象的成员进行操作，这就需要打破封装的限制，那么这个函数应该设置为全局的还是类的成员呢？</p>
+<span id="more"></span>
+
+<p><strong>有以下几种思路</strong>：</p>
+<ol>
+<li>函数设为公有，成员变量设为公有（不好）；</li>
+<li>函数设为公有另外写一个成员函数区获取成员变量的值（不好）；</li>
+<li>将函数设为类的友元函数（可以）；</li>
+<li>放入类中，作为成员函数（推荐）；</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局的operator==</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Date</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Date</span>(<span class="type">int</span> year = <span class="number">1900</span>, <span class="type">int</span> month = <span class="number">1</span>, <span class="type">int</span> day = <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        _year = year;</span><br><span class="line">        _month = month;</span><br><span class="line">        _day = day;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> _year;</span><br><span class="line">    <span class="type">int</span> _month;</span><br><span class="line">    <span class="type">int</span> _day;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 这里会发现运算符重载成全局的就需要成员变量是共有的，那么问题来了，封装性如何保证？</span></span><br><span class="line"><span class="comment">// 这里其实可以用我们后面学习的友元解决，或者干脆重载成成员函数。</span></span><br><span class="line"><span class="type">bool</span> <span class="keyword">operator</span>==(<span class="type">const</span> Date&amp; d1, <span class="type">const</span> Date&amp; d2)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> d1._year == d2._year</span><br><span class="line">    &amp;&amp; d1._month == d2._month</span><br><span class="line">        &amp;&amp; d1._day == d2._day;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">Date <span class="title">d1</span><span class="params">(<span class="number">2018</span>, <span class="number">9</span>, <span class="number">26</span>)</span></span>;</span><br><span class="line">    <span class="function">Date <span class="title">d2</span><span class="params">(<span class="number">2018</span>, <span class="number">9</span>, <span class="number">29</span>)</span></span>;</span><br><span class="line">    cout &lt;&lt; (d1 == d2) &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样的写法就打破了封装，让类的成员都暴露了出来，这样的损失不太值得。</p>
+<h3 id="赋值运算符重载"><a href="#赋值运算符重载" class="headerlink" title="赋值运算符重载"></a>赋值运算符重载</h3><p>赋值操作运算符重载特征如下：</p>
+<ul>
+<li>参数类型相同；</li>
+<li>返回值；</li>
+<li>检测是否给自己赋值；</li>
+<li>返回*this；</li>
+<li>一个类如果没有显式的定义赋值操作符重载，编译器会自动生成一个，完成对象字节序的拷贝（浅拷贝）；</li>
+<li>赋值运算符在类中不显式实现时，<strong>编译器会生成一份默认的</strong>，此时用户在类外再将赋值运算符重载为全局的，<strong>就和编译器生成的默认赋值运算符冲突了</strong>，故赋值运算符只能重载成成员函数。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Date</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Date</span>(<span class="type">int</span> year = <span class="number">1900</span>, <span class="type">int</span> month = <span class="number">1</span>, <span class="type">int</span> day = <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        _year = year;</span><br><span class="line">        _month = month;</span><br><span class="line">        _day = day;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Display</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout &lt;&lt; _year &lt;&lt; <span class="string">&quot;-&quot;</span> &lt;&lt; _month &lt;&lt; <span class="string">&quot;-&quot;</span> &lt;&lt; _day &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> _year;</span><br><span class="line">    <span class="type">int</span> _month;</span><br><span class="line">    <span class="type">int</span> _day;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Date d1;</span><br><span class="line">    <span class="function">Date <span class="title">d2</span><span class="params">(<span class="number">2018</span>, <span class="number">10</span>, <span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="comment">// 这里d1调用的编译器生成operator=完成拷贝，d2和d1的值也是一样的。</span></span><br><span class="line">    d1 = d2;</span><br><span class="line">    d1.<span class="built_in">Display</span>();</span><br><span class="line">    d2.<span class="built_in">Display</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是不是很像自动生成的拷贝构造？那么它也存在一定的问题，对于日期类的对象他能很好的完成赋值操作，可对于指针类型呢？</p>
+<p>下面的程序会崩溃</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">String</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">String</span>(<span class="type">const</span> <span class="type">char</span>* str = <span class="string">&quot;songxin&quot;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;String(const char* str = \&quot;songxin\&quot;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">        _str = (<span class="type">char</span>*)<span class="built_in">malloc</span>(<span class="built_in">strlen</span>(str) + <span class="number">1</span>);</span><br><span class="line">        <span class="built_in">strcpy</span>(_str, str);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">String</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;~String()&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="built_in">free</span>(_str);</span><br><span class="line">        _str = <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">char</span>* _str;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">s1</span><span class="params">(<span class="string">&quot;tanmei&quot;</span>)</span></span>;</span><br><span class="line">    String s2;</span><br><span class="line">    s2 = s1;	</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原因也是因为浅拷贝的关系，导致同一块内存被释放了两次，程序崩溃。</p>
+<p><strong>可以不显式定义赋值操作符重载函数的情况</strong></p>
+<ul>
+<li>成员变量没有指针；</li>
+<li>成员变量有指针，但是指针没有管理内存资源；</li>
+</ul>
+<p><strong>注意：赋值操作符重载与拷贝构造不同的地方就是拷贝构造是在对象定义时，而赋值操作符重载是作用于已经存在的对象</strong>。</p>
+<h3 id="const成员"><a href="#const成员" class="headerlink" title="const成员"></a>const成员</h3><p>const修饰类的成员函数，有点奇怪，const怎么能修饰函数呢？</p>
+<blockquote>
+<p><strong>将const修饰的类成员函数称之为const成员函数</strong>，const修饰类成员函数，实际修饰该成员函数隐含的this指针指向的对象，表明在该成员函数中不能对指针指向对象的任何成员进行修改。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021627864.png" alt="image-20220522083638398"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Date</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Date</span>()<span class="comment">//构造函数不写的话创建const的对象会报错。</span></span><br><span class="line">        :</span><br><span class="line">        _year(<span class="number">1900</span>),</span><br><span class="line">        _month(<span class="number">1</span>),</span><br><span class="line">        _day(<span class="number">1</span>)</span><br><span class="line">    &#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Display</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Display ()&quot;</span> &lt;&lt; endl;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;year:&quot;</span> &lt;&lt; _year &lt;&lt; endl;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;month:&quot;</span> &lt;&lt; _month &lt;&lt; endl;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;day:&quot;</span> &lt;&lt; _day &lt;&lt; endl &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Display</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Display () const&quot;</span> &lt;&lt; endl;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;year:&quot;</span> &lt;&lt; _year &lt;&lt; endl;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;month:&quot;</span> &lt;&lt; _month &lt;&lt; endl;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;day:&quot;</span> &lt;&lt; _day &lt;&lt; endl &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> _year; <span class="comment">// 年</span></span><br><span class="line">    <span class="type">int</span> _month; <span class="comment">// 月</span></span><br><span class="line">    <span class="type">int</span> _day; <span class="comment">// 日</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Date d1;</span><br><span class="line">    d1.<span class="built_in">Display</span>();</span><br><span class="line">    <span class="type">const</span> Date d2;</span><br><span class="line">    d2.<span class="built_in">Display</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>const的对象就会调用Display函数会调用哪一个呢？注意到上面代码的第18行的函数被const修饰，那么这个const有什么作用？</p>
+<p>实际上这个const修饰的是*<strong>this</strong>，表明 *<strong>this</strong>不可被修改，那么const的对象就会调用被const修饰的函数，否则可能会出现下面的问题。</p>
+<ul>
+<li>const对象可以调用非const成员函数吗？</li>
+</ul>
+<p>​		 不可以，权限放大。</p>
+<ul>
+<li>非const对象可以调用const成员函数吗？</li>
+</ul>
+<p>​		可以，权限缩小。</p>
+<ul>
+<li>const成员函数内可以调用其它的非const成员函数吗？</li>
+</ul>
+<p>​		不可以，权限放大。</p>
+<ul>
+<li>非const成员函数内可以调用其它的const成员函数吗？</li>
+</ul>
+<p>​		可以，权限缩小。</p>
+<p><strong>还有一个值得注意的地方，上面的代码如果我们不显式定义构造函数的话，实例化const的对象时会报错</strong>：</p>
+<blockquote>
+<p>“d2”: 必须初始化 const 对象</p>
+</blockquote>
+<p>也就是说编译器认为const对象（包括成员）无法被赋值，应该有初始化操作，而默认生成的构造是没有对int有初始化操作的，因此报错；</p>
+<h3 id="取地址及const取地址操作符重载"><a href="#取地址及const取地址操作符重载" class="headerlink" title="取地址及const取地址操作符重载"></a>取地址及const取地址操作符重载</h3><p>取地址操作符也要重载吗？只有很少的情况会用到，通常直接使用编译器默认生成的就可以。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Date</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Date* <span class="keyword">operator</span>&amp;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">const</span> Date* <span class="keyword">operator</span>&amp;()<span class="type">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> _year; <span class="comment">// 年</span></span><br><span class="line">    <span class="type">int</span> _month; <span class="comment">// 月</span></span><br><span class="line">    <span class="type">int</span> _day; <span class="comment">// 日</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>那么什么时候我们会重载呢？</p>
+<ul>
+<li>想让别人获取指定的内容的地址；</li>
+<li>隐藏对象真实的地址；</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Date</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Date* <span class="keyword">operator</span>&amp;()<span class="comment">//隐藏对象真实地址</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span>* <span class="keyword">operator</span>&amp;()<span class="type">const</span><span class="comment">//让用户指定获取成员变量_day的地址</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>  &amp;(_day);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> _year; <span class="comment">// 年</span></span><br><span class="line">    <span class="type">int</span> _month; <span class="comment">// 月</span></span><br><span class="line">    <span class="type">int</span> _day; <span class="comment">// 日</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">const</span> Date d1;</span><br><span class="line">    Date d2;</span><br><span class="line">    cout &lt;&lt; &amp;d1 &lt;&lt; endl;<span class="comment">//</span></span><br><span class="line">    cout &lt;&lt; &amp;d2 &lt;&lt; endl;<span class="comment">//</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<blockquote>
+<p>0000005597AFF770<br>0000000000000000</p>
+</blockquote>
+<p>不过这样的情况确实很少，也没有什么意义。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>NcPhoton
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://next.xinsong.xyz/2023/01/12/C++/9.C++%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" title="C++运算符重载">http://next.xinsong.xyz/2023/01/12/C++/9.C++运算符重载/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/cpp/" rel="tag"># cpp</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/01/12/C++/8.C++%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0/" rel="prev" title="C++析构函数">
+                  <i class="fa fa-chevron-left"></i> C++析构函数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/12/C++/10.C++%E7%B1%BB%E5%92%8C%E5%AF%B9%E8%B1%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" rel="next" title="C++类和对象下">
+                  C++类和对象下 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NcPhoton</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

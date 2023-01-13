@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"next.xinsong.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="计算机的诞生传统的技术发展 技术进步是要花钱的，钱从哪里来？那么只有国家给，但是国家却无法从中获利，技术没有稳定的资金来源，因此技术进步是受阻并且缓慢的。 技术商业化 技术人员：搞技术。 搞技术需要资金，那么商业化的公司投资，获得其技术的授权和专利。 于是产生了intel，apple等公司用技术孵化出民用级的产品，于是将技术变现卖给老百姓。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统">
+<meta property="og:url" content="http://next.xinsong.xyz/2023/01/12/Linux/1.%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="Nico&#39;s Blog">
+<meta property="og:description" content="计算机的诞生传统的技术发展 技术进步是要花钱的，钱从哪里来？那么只有国家给，但是国家却无法从中获利，技术没有稳定的资金来源，因此技术进步是受阻并且缓慢的。 技术商业化 技术人员：搞技术。 搞技术需要资金，那么商业化的公司投资，获得其技术的授权和专利。 于是产生了intel，apple等公司用技术孵化出民用级的产品，于是将技术变现卖给老百姓。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021634181.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021635452.png">
+<meta property="article:published_time" content="2023-01-12T14:20:07.000Z">
+<meta property="article:modified_time" content="2023-01-13T03:37:49.849Z">
+<meta property="article:author" content="NcPhoton">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021634181.png">
+
+
+<link rel="canonical" href="http://next.xinsong.xyz/2023/01/12/Linux/1.%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://next.xinsong.xyz/2023/01/12/Linux/1.%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/","path":"2023/01/12/Linux/1.操作系统/","title":"操作系统"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>操作系统 | Nico's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+<script defer src="/live2d-widget/autoload.js"></script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Nico's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">做了一点微小的工作</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E8%AF%9E%E7%94%9F"><span class="nav-number">1.</span> <span class="nav-text">计算机的诞生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95"><span class="nav-number">2.</span> <span class="nav-text">操作系统发展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">3.</span> <span class="nav-text">操作系统是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%A6%82%E6%8B%AC"><span class="nav-number">4.</span> <span class="nav-text">简单概括</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="NcPhoton"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">NcPhoton</p>
+  <div class="site-description" itemprop="description">今日事今日毕</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sxfinn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sxfinn" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxnicoa@gmail.com" title="E-Mail → mailto:sxnicoa@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://next.xinsong.xyz/2023/01/12/Linux/1.%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="NcPhoton">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico's Blog">
+      <meta itemprop="description" content="今日事今日毕">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="操作系统 | Nico's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          操作系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-12 22:20:07" itemprop="dateCreated datePublished" datetime="2023-01-12T22:20:07+08:00">2023-01-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-13 11:37:49" itemprop="dateModified" datetime="2023-01-13T11:37:49+08:00">2023-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="计算机的诞生"><a href="#计算机的诞生" class="headerlink" title="计算机的诞生"></a>计算机的诞生</h3><p><strong>传统的技术发展</strong></p>
+<p>技术进步是要花钱的，钱从哪里来？那么只有国家给，但是国家却无法从中获利，技术没有稳定的资金来源，因此技术进步是受阻并且缓慢的。</p>
+<p><strong>技术商业化</strong></p>
+<p>技术人员：搞技术。</p>
+<p>搞技术需要资金，那么商业化的公司投资，获得其技术的授权和专利。</p>
+<p>于是产生了intel，apple等公司用技术孵化出民用级的产品，于是将技术变现卖给老百姓。</p>
+<span id="more"></span>
+
+<h3 id="操作系统发展"><a href="#操作系统发展" class="headerlink" title="操作系统发展"></a>操作系统发展</h3><p><strong>为什么诞生了操作系统？</strong></p>
+<p>在计算机被发明之初，只是一堆硬件，其使用成本是非常高的，通常只能是专业的科学家。</p>
+<p>有人开始研发计算机上的软件，于是由肯汤普森使用汇编语言编写的Unix诞生，开始进入高校和各种实验室。</p>
+<p>丹尼斯里奇和肯汤普森又使用C语言编写了Unix，与此同时：</p>
+<ul>
+<li><p>授权了IBM等公司使用，至此大型公司也开始使用计算机。</p>
+</li>
+<li><p>微软等公司相继诞生，计算机开始进入普通家庭。</p>
+</li>
+<li><p>linux诞生，开源并不断有工程师给出改进方案。</p>
+</li>
+</ul>
+<h3 id="操作系统是什么"><a href="#操作系统是什么" class="headerlink" title="操作系统是什么"></a>操作系统是什么</h3><p>要知道操作系统是什么，就要先清楚两个问题：</p>
+<ol>
+<li>为什么要有操作系统？</li>
+</ol>
+<p>​		答：单纯的硬件操作效率地下，难度大。</p>
+<ol start="2">
+<li>操作系统和硬件的关系？</li>
+</ol>
+<p>​		移动端 （手机、平板）和桌面端设备，OS图示：</p>
+<img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021634181.png" alt="image-20220817161728113" style="zoom: 50%;" />
+
+
+
+<p>更为详细的：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021635452.png" alt="image-20220817163202176"></p>
+<ul>
+<li><strong>用户层</strong>：包括图形化界面，各种应用程序，各种库。</li>
+<li><strong>OS kernel</strong>：<strong>对上</strong>给用户提供良好高效的运行环境，<strong>对下</strong>管理好下层的软硬件资源，管理各种资源，包括：<ol>
+<li>进程管理</li>
+<li>文件管理</li>
+<li>内存管理</li>
+<li>驱动管理</li>
+</ol>
+</li>
+<li><strong>驱动层</strong>：一般，每一个硬件都有厂商提供的驱动，一些基础的硬件（鼠标，键盘，显示器）驱动由OS自动安装，<strong>对上</strong>提供访问硬件的接口，帮上层实现对硬件的基本访问，<strong>对下</strong>可以操作硬件。</li>
+<li><strong>硬件层</strong>：我们熟悉的硬件有CPU，显卡，显示器，鼠标，硬盘等等。</li>
+</ul>
+<p><strong>总结</strong>：<strong>OS</strong>是一款软件，是用于对软硬件资源进行管理的软件，是上层用户和下层硬件的媒介。</p>
+<p><strong>例如</strong>：显示器是我们使用时感知最明显的硬件，而如果我们想在显示器上使用printf或者cout向显示器上打印，本质就是像硬件写入数据，而对硬件写入数据的具体过程不需要我们关心，我们只需要告诉操作系统我们的需求，操作系统会完成对硬件的访问和操作，这样就大大提高了效率。</p>
+<h3 id="简单概括"><a href="#简单概括" class="headerlink" title="简单概括"></a>简单概括</h3><p><strong>内核</strong></p>
+<p>内核主要目的是为了应用程序提供一个稳定良好的运行程序，其要干的五件事情：</p>
+<ol>
+<li>内存管理</li>
+<li>虚拟文件</li>
+<li>系统进程调度</li>
+<li>网络接口</li>
+<li>进程间通信</li>
+</ol>
+<p>从编程的角度看：</p>
+<p><strong>Linux内核就是一个调用库，应用程序通过调用Linux提供的API函数来实现操作，Linux内核通过与驱动通信实现对硬件的有效管理</strong>。</p>
+<p><strong>驱动程序</strong></p>
+<p>驱动程序属于内核的一部分，<strong>是内核的扩展组件</strong>，用来帮助内核实现硬件的连接和操控，不包含驱动的内核也叫内核。内核通过提供统一的驱动操作接口供用户层使用，驱动就是在这层统一的接口下实现硬件的操控的中间层。</p>
+<p><strong>操作系统</strong></p>
+<p>操作系统，在内核的基础上有延伸，包括了<strong>提供基础服务的系统组件</strong>。操作系统是用户和硬件之间的一层媒介程序，为上提供编程接口，为下调用资源，管理驱动，以使用硬件。不管是Linux还是Windows或者安卓、iOS，它的主要功能有两点：</p>
+<ol>
+<li><p>有效管理硬件。</p>
+</li>
+<li><p>方便用户操作。</p>
+</li>
+</ol>
+<p><strong>驱动与操作系统的关系</strong>：</p>
+<p>驱动程序实现了操作系统对硬件的有效管理，是操作系统管理硬件的一个途径。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>NcPhoton
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://next.xinsong.xyz/2023/01/12/Linux/1.%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="操作系统">http://next.xinsong.xyz/2023/01/12/Linux/1.操作系统/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/01/12/Linux/0.%E5%BC%80%E6%BA%90%E6%98%AF%E4%BB%80%E4%B9%88/" rel="prev" title="开源是什么">
+                  <i class="fa fa-chevron-left"></i> 开源是什么
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/12/Linux/2.%E5%85%B3%E4%BA%8ELinux/" rel="next" title="关于Linux">
+                  关于Linux <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NcPhoton</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

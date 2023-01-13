@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"next.xinsong.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="💦字符串 字符串是什么   例：”hello world！“   这种被双引号” “引起来的一串字符叫做字符串字面值，简称字符串。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言转义字符">
+<meta property="og:url" content="http://next.xinsong.xyz/2023/01/12/C/2.%E3%80%90%E5%88%9D%E8%AF%86C%E8%AF%AD%E8%A8%80%E3%80%91%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/index.html">
+<meta property="og:site_name" content="Nico&#39;s Blog">
+<meta property="og:description" content="💦字符串 字符串是什么   例：”hello world！“   这种被双引号” “引起来的一串字符叫做字符串字面值，简称字符串。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021543172.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021543423.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021544802.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021545966.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021545548.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021545151.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021545927.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021546179.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021546051.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021546473.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021546846.png">
+<meta property="article:published_time" content="2023-01-12T13:21:07.000Z">
+<meta property="article:modified_time" content="2023-01-13T03:34:48.723Z">
+<meta property="article:author" content="NcPhoton">
+<meta property="article:tag" content="c">
+<meta property="article:tag" content="字符">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021543172.png">
+
+
+<link rel="canonical" href="http://next.xinsong.xyz/2023/01/12/C/2.%E3%80%90%E5%88%9D%E8%AF%86C%E8%AF%AD%E8%A8%80%E3%80%91%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://next.xinsong.xyz/2023/01/12/C/2.%E3%80%90%E5%88%9D%E8%AF%86C%E8%AF%AD%E8%A8%80%E3%80%91%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/","path":"2023/01/12/C/2.【初识C语言】转义字符/","title":"C语言转义字符"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C语言转义字符 | Nico's Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+<script defer src="/live2d-widget/autoload.js"></script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Nico's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">做了一点微小的工作</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%92%A6%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.</span> <span class="nav-text">💦字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%92%A6%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6"><span class="nav-number">2.</span> <span class="nav-text">💦转义字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%92%A6%E6%B3%A8%E9%87%8A"><span class="nav-number">3.</span> <span class="nav-text">💦注释</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="NcPhoton"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">NcPhoton</p>
+  <div class="site-description" itemprop="description">今日事今日毕</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sxfinn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sxfinn" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxnicoa@gmail.com" title="E-Mail → mailto:sxnicoa@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://next.xinsong.xyz/2023/01/12/C/2.%E3%80%90%E5%88%9D%E8%AF%86C%E8%AF%AD%E8%A8%80%E3%80%91%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="NcPhoton">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico's Blog">
+      <meta itemprop="description" content="今日事今日毕">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C语言转义字符 | Nico's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C语言转义字符
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-12 21:21:07" itemprop="dateCreated datePublished" datetime="2023-01-12T21:21:07+08:00">2023-01-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-13 11:34:48" itemprop="dateModified" datetime="2023-01-13T11:34:48+08:00">2023-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">C语言</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="💦字符串"><a href="#💦字符串" class="headerlink" title="💦字符串"></a>💦字符串</h2><ul>
+<li><strong>字符串是什么</strong></li>
+</ul>
+<blockquote>
+<p>例：”hello world！“</p>
+</blockquote>
+<p> 这种被双引号<font color=red>” “</font>引起来的一串字符叫做字符串字面值，简称字符串。</p>
+<span id="more"></span>
+
+<ul>
+<li><strong>注意</strong>：在我的上一篇文章已经讲过，字符串的结束标志是一个‘\0’的转义字符，在字符串的末尾被省略了。</li>
+<li><strong>字符串的存储方式</strong></li>
+</ul>
+<blockquote>
+<p>我们都知道，一个字符是储存在变量中的。</p>
+<p>那字符串储存在哪里呢？</p>
+<p>接下来介绍一下在C语言中存储字符串的两种方式，上代码：</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> arr1[] = <span class="string">&quot;hehe&quot;</span>;</span><br><span class="line">    <span class="type">char</span> arr2[] = &#123; <span class="string">&#x27;h&#x27;</span>,<span class="string">&#x27;e&#x27;</span>,<span class="string">&#x27;h&#x27;</span>,<span class="string">&#x27;e&#x27;</span> &#125;;<span class="comment">//字符挨个连续地储存到数组中</span></span><br><span class="line">    <span class="type">char</span> arr3[] = &#123; <span class="string">&#x27;h&#x27;</span>,<span class="string">&#x27;e&#x27;</span>,<span class="string">&#x27;h&#x27;</span>,<span class="string">&#x27;e&#x27;</span> ,<span class="string">&#x27;\0&#x27;</span> &#125;;</span><br><span class="line">    <span class="type">char</span>*arr4   = <span class="string">&quot;hehe&quot;</span>;	<span class="comment">//”hehe“这样的字符串在程序中其实是首字符的地址</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, arr1);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, arr2);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, arr3);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, arr4);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 输出结果如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021543172.png" alt="image-20220715082445542"></p>
+<p>可以看到arr1和arr3的输出结果是相同的，但是arr2的结果就让人看不懂了，虽然 &#x3D;&#x3D;”hehe”&#x3D;&#x3D;仍在屏幕上打印出来了，但后面跟了”烫烫烫烫hehe“的乱码。</p>
+<p><strong>思考</strong>：<strong>出现这种情况的原因是什么呢？</strong></p>
+<p>我们来调试一下代码，如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021543423.png" alt="image-20220518223534478"></p>
+<p><strong>分析</strong>：似乎他们的不同之处也就只有arr1的末尾比arr2多了一个‘\0’，而我们也联想到了另一个函数那就是strlen函数，在使用strlen函数时也出现了这样一个问题，strlen函数在返回arr2这样的数组的字符串长度时，总是返回的随机值。</p>
+<p>这里就与printf打印字符串的方式有关了，printf在以%s的形式打印arr2时，不断的向后打印每一个字符在标准输出上，直到遇到’\0’才会停止操作。</p>
+<p>这里附上一条详细介绍printf函数的链接。如下：</p>
+<p><a target="_blank" rel="noopener" href="http://cplusplus.com/reference/cstdio/printf/?kw=printf"><strong>printf函数详解</strong></a></p>
+<blockquote>
+<p><strong>牢记:字符串的结束标志是一个’\0’转义字符，一定不能忽略。</strong></p>
+</blockquote>
+<h2 id="💦转义字符"><a href="#💦转义字符" class="headerlink" title="💦转义字符"></a>💦转义字符</h2><ul>
+<li>如果想打印出一个文件的路径，我们该写出什么样的代码？</li>
+</ul>
+<blockquote>
+<p>例：打印出 c:\code-c++\test.cpp</p>
+</blockquote>
+<p>我们来尝试一下我们大概率首先想到的代码。如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="string">&quot;c:\code - c++\test.cpp&quot;</span>);		</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来看看运行结果：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021544802.png" alt="image-20220518223542045"></p>
+<p>这似乎与我们想要的不太一样，我们来看看少了哪些东西。</p>
+<p><strong>思考</strong>：这里红色框框内就是没有打印出来分别的是<font color=purple>‘\‘和’\t’</font>,这似乎两者都带着一个 &#x3D;&#x3D;’\ ‘&#x3D;&#x3D; 字符，那这究竟是什么呢？</p>
+<p>这就不得不提到转义字符，顾名思义就是转变含义。</p>
+<table>
+<thead>
+<tr>
+<th>转义字符</th>
+<th align="left">释义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\?</td>
+<td align="left">在书写连续多个问号时，防止他们被解析成三字母词</td>
+</tr>
+<tr>
+<td>\‘</td>
+<td align="left">用于表示字符常量 ’</td>
+</tr>
+<tr>
+<td>\“</td>
+<td align="left">用于表示一个字符串内部的双引号（将”的含义从双引号的一半”—&gt;单纯的<font color=red> “ </font>符号）</td>
+</tr>
+<tr>
+<td>\\</td>
+<td align="left">用于表示一个反斜杠，防止它被解释为一个转义字符</td>
+</tr>
+<tr>
+<td>\a</td>
+<td align="left">警告字符，蜂鸣</td>
+</tr>
+<tr>
+<td>\b</td>
+<td align="left">退格符</td>
+</tr>
+<tr>
+<td>\f</td>
+<td align="left">进纸符</td>
+</tr>
+<tr>
+<td>\n</td>
+<td align="left">换行</td>
+</tr>
+<tr>
+<td>\r</td>
+<td align="left">回车</td>
+</tr>
+<tr>
+<td>\t</td>
+<td align="left">制表符</td>
+</tr>
+<tr>
+<td>\v</td>
+<td align="left">垂直制表符</td>
+</tr>
+<tr>
+<td>\ddd</td>
+<td align="left">ddd表示3个八进制的数字</td>
+</tr>
+<tr>
+<td>\xdd</td>
+<td align="left">dd表示两个十六进制的数字</td>
+</tr>
+</tbody></table>
+<p>接下来解决两个问题：</p>
+<blockquote>
+<p>问题一：如何在屏幕上打印<font color =purple>一个单引号 ‘</font></p>
+<p>问题二：如何在屏幕上打印一个字符串，字符串内容是<font color =purple>一个双引号 “</font></p>
+</blockquote>
+<p>通常在不了解转义字符的情况下，我们会写出如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, <span class="string">&quot;&#x27;&quot;</span>);</span><br><span class="line">    print(<span class="string">&quot;%c&quot;</span>, <span class="string">&quot;&quot;</span><span class="string">&quot;);</span></span><br><span class="line"><span class="string">    return 0;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到已经报错了这里已经报错了，错误如下图：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021545966.png" alt="image-20220518223742657"></p>
+<p>既然这样不行，我们结合一下上面的转义字符表再来尝试；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021545548.png" alt="image-20220518223749655"></p>
+<p>接着我们修改一下代码，如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021545151.png" alt="image-20220518223755531"></p>
+<p>可以看到VS报的错误已经没有了，那我们来试试是否可以编译呢？</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021545927.png" alt="image-20220518223801309"></p>
+<p>成功在屏幕上打印出了 &#x3D;&#x3D;&#39;和 &quot;&#x3D;&#x3D;。</p>
+<p>回到刚刚打印路径的问题：</p>
+<blockquote>
+<p><strong>例</strong>：打印出 c:\code-c++\test.cpp</p>
+</blockquote>
+<p><strong>分析</strong>：根据上面的表格</p>
+<p>我们可以看到这里的<font color=purple> ‘\t’ 和 ‘\\‘ </font>都是转义字符’&#39;，因此我们如果想要在屏幕上打印出<font color=purple> ‘\t’ 和 ‘\&#39; </font>就必须防止<font color=purple>‘\’</font>被解释为转义字符前面的那个<font color=red>‘\‘</font>.</p>
+<p>因此，我们利用 ‘\\‘ 这个转义字符的作用，在’\t’和’\‘前再加一个’\‘。<br>如下图：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021546179.png" alt="image-20220518223813712"></p>
+<p>显然，我们达成了目的，与我们想要的结果一致。</p>
+<p>为了巩固这一重要却容易被忽视的知识点，我们再来做一个题：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in">strlen</span>(<span class="string">&quot;nihao&quot;</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in">strlen</span>(<span class="string">&quot;c\768code-c++\test&quot;</span>));	</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>先来回顾strlen的功能：strlen求得的是字符串的字符个数。</p>
+</blockquote>
+<p>答案是多少呢？</p>
+<p>先让我们来分析分析，除了转义字符外，其他字符都是单独存在的。</p>
+<p><font color=blue>“c\768code-c++\test” </font>这个字符串中有两个<font color=purple> ‘\‘ </font>，我们来重点看看这两个地方：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021546051.png" alt="image-20220518223826986"></p>
+<blockquote>
+<p>结合转义字符表：</p>
+<p>这样一对比是不是觉得很清晰了呢？</p>
+<p>显然，我们可以看到 &#x3D;&#x3D;’\t’ 和’\76’&#x3D;&#x3D; 是两个转义字符。</p>
+<p>到了这里又有一个新的疑问：</p>
+</blockquote>
+<p><strong>思考：’\768’是不是转义字符呢？</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021546473.png" alt="image-20220518223840572"></p>
+<blockquote>
+<p>注意，这里的8不是八进制数字，所以’\768’不是一个转义字符</p>
+</blockquote>
+<p>这里的\ddd中的d只能是八进制的数字，这也是一个大家非常容易忽略的地方。</p>
+<p>分析结束后，我们就可以开始数字符个数了！</p>
+<p>运行结果：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/sxfinn/CDN/img/202212021546846.png" alt="image-20220518223846551"></p>
+<blockquote>
+<p>答案是15</p>
+<p>大家数对了吗？</p>
+<p><strong>小结：转义字符也是字符，大小为1个byte。</strong></p>
+</blockquote>
+<h2 id="💦注释"><a href="#💦注释" class="headerlink" title="💦注释"></a>💦注释</h2><ul>
+<li><strong>注释方式</strong></li>
+</ul>
+<ol>
+<li><p>C语言的注释风格：<br>&#x2F;* xxxxxxxxxxx *&#x2F;</p>
+<blockquote>
+<p><strong>缺陷</strong>:不能嵌套注释</p>
+</blockquote>
+</li>
+<li><p>C++风格的注释风格：<br>&#x2F;&#x2F; xxxxxx</p>
+<blockquote>
+<p><strong>特点</strong>：可以注释一行也可以注释多行</p>
+</blockquote>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>NcPhoton
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://next.xinsong.xyz/2023/01/12/C/2.%E3%80%90%E5%88%9D%E8%AF%86C%E8%AF%AD%E8%A8%80%E3%80%91%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/" title="C语言转义字符">http://next.xinsong.xyz/2023/01/12/C/2.【初识C语言】转义字符/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/c/" rel="tag"># c</a>
+              <a href="/tags/%E5%AD%97%E7%AC%A6/" rel="tag"># 字符</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/01/12/C/1.%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9C%BC%E4%B8%AD%E7%9A%84%E4%B8%96%E7%95%8C/" rel="prev" title="计算机眼中的世界">
+                  <i class="fa fa-chevron-left"></i> 计算机眼中的世界
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/12/C/3.%E3%80%90%E5%88%9D%E8%AF%86C%E8%AF%AD%E8%A8%80%E3%80%91%EF%BC%88%E4%B8%8A%EF%BC%89/" rel="next" title="初识C语言上">
+                  初识C语言上 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NcPhoton</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
